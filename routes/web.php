@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'App\Http\Controllers\UploadFileController@uploadForm');
+Route::post('/', 'App\Http\Controllers\UploadFileController@upload');
+
+Route::get('/chats', 'App\Http\Controllers\ChatsController@index');
+

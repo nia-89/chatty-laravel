@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+
+<h1> Test Chats Index </h1>
+
+<ul>
+    @foreach ($chats as $chat)
+    <li>{{ $chat->filename }}</li>
+    @endforeach
+</ul>
+
+</body>
+
+</html>
