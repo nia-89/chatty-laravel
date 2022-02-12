@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadFileRequest;
-use App\Parsers;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Chat;
+use App\Services\ChatFile;
 
 class UploadFileController extends Controller
 {
@@ -13,40 +11,11 @@ class UploadFileController extends Controller
         return view('upload');
     }
 
-    public function upload(UploadFileRequest $request){   
+    public function upload(UploadFileRequest $request){ 
+        
+        $chatFile = (new ChatFile())->save($request);
 
-        $filename = now()->format('Y-m-d_His').'_'.$request->file('file')->getClientOriginalName();
-
-        //Get contents of file to String
-        $chatContent = $request->file('file')->get();
-
-        Storage::disk('local')->put('uploads/'.$filename, encrypt($chatContent));
-
-        //Determine the type of chat file that has been uploaded
-        if(preg_match("^\[([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}^",$chatContent)){
-            $chatType = 'iOS';
-        }
-        elseif(preg_match("^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/[0-9]{4},^",$chatContent)){
-            $chatType = 'Android';
-        }
-        else{
-            $chatType = 'Unknown';
-        }
-
-        //Save to DB
-        $chat = Chat::create([
-            'filename' => $filename,
-            'type'     => $chatType
-        ]);
-
-        //Run Parser for chat type
-        switch ($chat->type) {
-            case 'iOS':
-                $data = (new Parsers\WhatsApp\IOS())->parseFile($chatContent);
-                break;
-            case 'Android':
-                $data = (new Parsers\WhatsApp\Android())->parseFile($chatContent);
-            }
+        //$chatContent = (new ChatFile())->parse($chatFile);
         
         return redirect('/chats');
 

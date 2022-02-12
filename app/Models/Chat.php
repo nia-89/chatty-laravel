@@ -12,4 +12,9 @@ class Chat extends Model
 
     protected $guarded = [];
 
+    public function chatType() {
+
+        return $this->belongsTo(ChatType::class);
+    }
+
 }
