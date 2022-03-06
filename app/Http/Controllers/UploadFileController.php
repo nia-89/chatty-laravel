@@ -15,9 +15,9 @@ class UploadFileController extends Controller
         
         $chatFile = (new ChatFile())->save($request);
 
-        //$chatContent = (new ChatFile())->parse($chatFile);
+        $chatContent = (new ChatFile())->parse($chatFile);
         
-        return redirect('/chats');
+        return redirect('/chat/' . $chatFile->id);
 
     }
 

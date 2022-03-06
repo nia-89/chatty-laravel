@@ -19,11 +19,23 @@ class ChatAnalysisService
         $countBySender = [];
 
         foreach($groupBySender as $sender=>$messages){
-            $countBySender[] = [
-                $sender => $messages->count('messages')
-            ];
+            $countBySender[] = [$sender => $messages->count('messages')];
         }      
 
         return Arr::collapse($countBySender);
+    }
+
+    public function getBusiestDays($chatData,$numberOfDays=10){
+
+        $groupByDate = $chatData->groupBy('date');
+
+        $countByDate = collect();
+
+        foreach($groupByDate as $date=>$messages){
+            $countByDate->put($date,$messages->count('messages'));
+        }
+
+        return $countByDate->orderByDesc('messages')->take($numberOfDays);
+    
     }
 }
